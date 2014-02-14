@@ -2,9 +2,8 @@
 {% set devname = pillar['encryption']['dev_name'] %}
 {% set volgroup = pillar['encryption']['vg_name'] %}
 {% set mountpoint = pillar['encryption']['mount_name'] %}
-{% set size = pillar['encryption']['lv_size'] %}
+{% set dev_check = salt['file.is_blkdev'](devname + '1') %}
 
-{% if grains['os_family'] == 'Debian' %}
 crypto-package:
   pkg:
     - name: {{ pillar['packages']['cryptsetup'] }}
@@ -16,21 +15,31 @@ lvm2-package:
     - name: {{ pillar['packages']['lvm2'] }}
     - order: 11
     - installed
+
+{% if dev_check == False %}
+fdisk_run:
+  cmd.run:
+    - name: |
+        sfdisk -L {{ devname }} << EOF
+        ;
+        EOF
+        {{ dev_check }}
+    - order: 12
 {% endif %}
 
-{{ devname }}:
+{{ devname }}1:
   lvm.pv_present:
     - order: 100
 
 volume_data:
   lvm.vg_present:
-    - devices: {{ devname }}
+    - devices: {{ devname }}1
     - order: 101
 
 {{ mountpoint }}:
   lvm.lv_present:
     - vgname: volume_data
-    - size: {{ size }}
+    - extents: 100%FREE 
     - order: 102
 
 enc_volume:
