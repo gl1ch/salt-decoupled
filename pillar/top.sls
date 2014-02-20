@@ -2,4 +2,4 @@ base:
   '*':
     - packages
     - encryption
-    - service.ssh
+    - service-ssh
