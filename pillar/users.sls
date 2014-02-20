@@ -17,3 +17,4 @@ users:
     key: True {# Please note that you will need to add the users public key into salt/linux-server/users #}
     groups:
       - admin
+      - sudo
