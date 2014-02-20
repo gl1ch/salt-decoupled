@@ -5,7 +5,7 @@ The purpose of this state is to create / maintain and mount encrypted volumes on
 
 <pre>
 #!/bin/bash
-wget -O - http://salt.appliedminds.com/salt-bootstrap/bootstrap-salt.sh | sudo sh
+wget -O - http://salt.yourdomain.com/salt-bootstrap/bootstrap-salt.sh | sudo sh
 sed -i 's/#master: salt/master: salt.<YOURDOMAIN>.com/g' /etc/salt/minion
 service salt-minion restart
 apt-get update
